@@ -23,7 +23,8 @@ public class DesignerPane extends Pane {
 	 * @return Nothing.
 	 */
 	public void createTable() {
-		System.out.println("[TODO] CREATE TABLE");
+		Table table = new Table();
+		this.getChildren().add(table);
 	}
 	
 	/**
