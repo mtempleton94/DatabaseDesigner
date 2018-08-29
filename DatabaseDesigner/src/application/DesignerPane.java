@@ -16,4 +16,22 @@ public class DesignerPane extends Pane {
 	public DesignerPane() {
 		this.setStyle("-fx-background-color: yellow;");
 	}
+	
+	/**
+	 * Create a new table object and display it in the 
+	 * designer area
+	 * @return Nothing.
+	 */
+	public void createTable() {
+		System.out.println("[TODO] CREATE TABLE");
+	}
+	
+	/**
+	 * Activate the tool for creating a new 
+	 * relationship in the designer area
+	 * @return Nothing.
+	 */
+	public void createRelationship() {
+		System.out.println("[TODO] CREATE RELATIONSHIP");
+	}
 }

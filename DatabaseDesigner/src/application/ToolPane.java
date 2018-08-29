@@ -21,11 +21,12 @@ public class ToolPane extends HBox {
 	/**
 	 * Add a button to the tool bar
 	 * @param text Label to be displayed for the tool
-	 * @return Nothing.
+	 * @return Created ToolButton.
 	 */
-    public void addToolButton(String text) {
-		ToolButton createTable = new ToolButton(text);
-		this.getChildren().add(createTable);
+    public ToolButton addToolButton(String text) {
+		ToolButton button = new ToolButton(text);
+		this.getChildren().add(button);
+		return button;
     }
 
 }

@@ -42,4 +42,31 @@ public class ToolButton extends VBox {
 	    this.getChildren().add(title);
 		
 	}
+
+	/**
+	 * Add an action to the button that enables the creation of
+	 * a new element in the database designer pane.
+	 * @param element Type of element to be created
+	 * @param designerPane DesignerPane on which to create the element
+	 * @return Nothing.
+	 */
+	public void addCreateAction(DatabaseElement element, DesignerPane designerPane) {
+
+		// call the relevant DesignerPane element creation method when clicked.
+		this.setOnMouseClicked((e)->
+		{
+        	// set method based on element
+        	switch (element) {
+			case TABLE:
+				designerPane.createTable();
+				break;
+			case RELATIONSHIP:
+				designerPane.createRelationship();
+				break;
+			default:
+				break;
+        	}
+        });
+	}
+
 }

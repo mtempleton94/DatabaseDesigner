@@ -18,11 +18,17 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			// create schema designer pane
+			DesignerPane designerPane = new DesignerPane();
 			
 			// create tools menu pane			
 			ToolPane toolPane = new ToolPane();
-			toolPane.addToolButton("Table");
-			toolPane.addToolButton("Relationship");
+			ToolButton createTableButton = toolPane.addToolButton("Table");
+			ToolButton createRelationshipButton = toolPane.addToolButton("Relationship");
+
+			// define actions for the buttons
+			createTableButton.addCreateAction(DatabaseElement.TABLE, designerPane);
+			createRelationshipButton.addCreateAction(DatabaseElement.RELATIONSHIP, designerPane);
 			
 			// create explorer pane
 			ExplorerPane explorer = new ExplorerPane();
@@ -33,9 +39,6 @@ public class Main extends Application {
 			// remove one of the tables (for testing purposes)
 			explorer.removeTable("Placeholder 1");
 			explorer.updateTableExplorer();
-			
-			// create schema designer pane 
-			DesignerPane designerPane = new DesignerPane();
 
 			// add the panes to the window
 			BorderPane root = new BorderPane(designerPane, toolPane, null, null, explorer);
