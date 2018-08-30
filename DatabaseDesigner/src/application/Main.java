@@ -23,8 +23,8 @@ public class Main extends Application {
 			
 			// create tools menu pane			
 			ToolPane toolPane = new ToolPane();
-			ToolButton createTableButton = toolPane.addToolButton("Table");
-			ToolButton createRelationshipButton = toolPane.addToolButton("Relationship");
+			ToolButton createTableButton = toolPane.addToolButton("Table", DatabaseElement.TABLE);
+			ToolButton createRelationshipButton = toolPane.addToolButton("Relationship", DatabaseElement.RELATIONSHIP);
 
 			// define actions for the buttons
 			createTableButton.addCreateAction(DatabaseElement.TABLE, designerPane);
