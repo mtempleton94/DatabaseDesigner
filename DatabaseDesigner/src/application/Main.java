@@ -23,12 +23,12 @@ public class Main extends Application {
 			
 			// create tools menu pane			
 			ToolPane toolPane = new ToolPane();
-			ToolButton createTableButton = toolPane.addToolButton("Table", DatabaseElement.TABLE);
-			ToolButton createRelationshipButton = toolPane.addToolButton("Relationship", DatabaseElement.RELATIONSHIP);
+			ToolButton createTableButton = toolPane.addToolButton("Table", DesignerTool.TABLE_CREATE, ButtonType.BUTTON);
+			ToolButton createRelationshipButton = toolPane.addToolButton("Relationship", DesignerTool.RELATIONSHIP_CREATE, ButtonType.TOGGLE);
 
 			// define actions for the buttons
-			createTableButton.addCreateAction(DatabaseElement.TABLE, designerPane);
-			createRelationshipButton.addCreateAction(DatabaseElement.RELATIONSHIP, designerPane);
+			createTableButton.addCreateAction(DesignerTool.TABLE_CREATE, designerPane, toolPane);
+			createRelationshipButton.addCreateAction(DesignerTool.RELATIONSHIP_CREATE, designerPane, toolPane);
 			
 			// create explorer pane
 			ExplorerPane explorer = new ExplorerPane();

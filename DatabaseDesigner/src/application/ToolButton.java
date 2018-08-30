@@ -23,15 +23,17 @@ import javafx.scene.text.Text;
 * @since   2018-08-28
 */
 public class ToolButton extends VBox {
-	
+
 	// store number of buttons created to help with positioning
 	private static final AtomicInteger buttonCount = new AtomicInteger(0);
+	private DesignerTool tool;
 
-	public ToolButton(String text, DatabaseElement element) {
+	public ToolButton(String text, DesignerTool tool, ButtonType type, ToolPane toolPane) {
+		this.tool = tool;
 
 		// set button count
 		buttonCount.incrementAndGet();
-		
+
 		// set button position and alignment
 		this.setMinWidth(100);
 		this.setMaxHeight(80);
@@ -40,67 +42,97 @@ public class ToolButton extends VBox {
 		this.setAlignment(Pos.CENTER);
 
 		// set background and border of the button
-		this.setStyle("-fx-background-color: #adafb2;" + "-fx-border-style: solid inside;"
-	            + "-fx-border-width: 1;" + "-fx-border-color: white;");
+		this.setStyle("-fx-background-color: #adafb2;" + "-fx-border-style: solid inside;" + "-fx-border-width: 1;"
+				+ "-fx-border-color: white;");
 
 		// add appropriate icon for button
-		switch (element) {
-			case TABLE:
+		switch (tool) {
+			case TABLE_CREATE:
 				this.getChildren().add(createTableIcon());
 				break;
-			case RELATIONSHIP:
+			case RELATIONSHIP_CREATE:
 				this.getChildren().add(createRelationshipIcon());
 				break;
 			default:
 				break;
 		}
-		
+
 		// label
-	    Text title = new Text(text);
-	    title.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-	    this.getChildren().add(title);
-		
+		Text title = new Text(text);
+		title.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+		this.getChildren().add(title);
+
 	}
 
 	/**
-	 * Add an action to the button that enables the creation of
-	 * a new element in the database designer pane.
-	 * @param element Type of element to be created
+	 * Add an action to the button that enables the creation of a new element in the
+	 * database designer pane.
+	 * @param tool Identify the tool action is being added for
 	 * @param designerPane DesignerPane on which to create the element
+	 * @param toolPane Identify tool pane the button belongs to.
 	 * @return Nothing.
 	 */
-	public void addCreateAction(DatabaseElement element, DesignerPane designerPane) {
+	public void addCreateAction(DesignerTool tool, DesignerPane designerPane, ToolPane toolPane) {
 
-		// call the relevant DesignerPane element creation method when clicked.
-		this.setOnMouseClicked((e)->
-		{
-        	// set method based on element
-        	switch (element) {
-			case TABLE:
+		// call the required method when button is clicked
+		this.setOnMouseClicked((e) -> {
+
+			// set method based on element
+			switch (tool) {
+			case TABLE_CREATE:
+
+				// create table and deactivate any other active tools
 				designerPane.createTable();
+				toolPane.setActiveTool(null);
 				break;
-			case RELATIONSHIP:
-				designerPane.createRelationship();
+			case RELATIONSHIP_CREATE:
+
+				// check if relationship create tool is already active
+				if (toolPane.getActiveTool() != DesignerTool.RELATIONSHIP_CREATE) {
+
+					// set and show tool button as active
+					toolPane.setActiveTool(DesignerTool.RELATIONSHIP_CREATE);
+					this.setStyle("-fx-background-color: #efefff;" + "-fx-border-style: solid inside;"
+							+ "-fx-border-width: 1;" + "-fx-border-color: white;");
+				} else {
+
+					// set and show tool button as inactive
+					toolPane.setActiveTool(null);
+					this.setStyle("-fx-background-color: #adafb2;" + "-fx-border-style: solid inside;"
+							+ "-fx-border-width: 1;" + "-fx-border-color: white;");
+
+				}
 				break;
 			default:
 				break;
-        	}
-        });
+
+			}
+		});
 
 		// set appearance on mouse entry
-		this.setOnMouseEntered((e)->
-		{
-			this.setStyle("-fx-background-color: #efefff;" + "-fx-border-style: solid inside;"
-					+ "-fx-border-width: 1;" + "-fx-border-color: white;");
+		this.setOnMouseEntered((e) -> {
+			this.setStyle("-fx-background-color: #efefff;" + "-fx-border-style: solid inside;" + "-fx-border-width: 1;"
+					+ "-fx-border-color: white;");
 		});
 
 		// set appearance on mouse exit
-		this.setOnMouseExited((e)->
-		{
-			this.setStyle("-fx-background-color: #adafb2;" + "-fx-border-style: solid inside;"
-					+ "-fx-border-width: 1;" + "-fx-border-color: white;");
+		this.setOnMouseExited((e) -> {
+			// check that the tool is not active before changing its appearance
+			if (this.tool != toolPane.getActiveTool()) {
+				this.setStyle("-fx-background-color: #adafb2;" + "-fx-border-style: solid inside;"
+						+ "-fx-border-width: 1;" + "-fx-border-color: white;");
+			}
 		});
 
+	}
+
+	/**
+	 * Show this tool button as deselected/inactive
+	 * @return Nothing.
+	 */
+	public void showToolDeselected() {
+		this.setStyle("-fx-background-color: #adafb2;" + "-fx-border-style: solid inside;" + "-fx-border-width: 1;"
+				+ "-fx-border-color: white;");
 	}
 
 	/**
@@ -129,10 +161,8 @@ public class ToolButton extends VBox {
 		iconContainer.setPrefHeight(iconSize);
 
 		// add a border
-		iconContainer.setStyle("-fx-border-style: solid inside;"
-	            + "-fx-border-width: 1;"
-	            +"-fx-border-color: white;"
-	            + "-fx-background-color: #3d3e3f;");
+		iconContainer.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 1;" + "-fx-border-color: white;"
+				+ "-fx-background-color: #3d3e3f;");
 
 		// add the title panel
 		iconContainer.getChildren().add(rect);
