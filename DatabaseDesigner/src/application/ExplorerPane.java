@@ -42,6 +42,7 @@ public class ExplorerPane extends VBox {
 	public void addTable(String tableName) {
 		// add table to list of tables
 		tables.add(new Hyperlink(tableName));
+		this.updateTableExplorer();
 	}
 	
 	/**

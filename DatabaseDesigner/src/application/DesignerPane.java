@@ -45,11 +45,12 @@ public class DesignerPane extends Pane {
 	/**
 	 * Create a new table object and display it in the 
 	 * designer area
-	 * @return Nothing.
+	 * @return Table new table.
 	 */
-	public void createTable() {
+	public Table createTable() {
 		Table table = new Table();
 		this.getChildren().add(table);
+		return table;
 	}
 	
 	/**

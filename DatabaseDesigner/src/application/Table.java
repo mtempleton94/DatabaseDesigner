@@ -20,39 +20,51 @@ import javafx.scene.text.TextAlignment;
 public class Table extends VBox {
 	
 	private static final AtomicInteger idCount = new AtomicInteger(0); 
+	Table table;
 	private int tableId;
-	String name;
+	String tableName;
+	Text tableIdText;
 	
 	// positioning variables
 	double cursorXPosition, cursorYPosition;
 	double tableXPosition, tableYPosition;
 
 	public Table() {
-		
+
 		// set the table id 
-		setTableId(idCount.incrementAndGet());
+		this.setTableId(idCount.incrementAndGet());
 
 		// styling for the table container
 		this.setStyle("-fx-background-color: white;");
 		this.setWidth(80);
+
+		// set the default table name based in the id
+		this.setTableName("Table " + idCount.toString());
 
 		// add the table id [temporary - will be removed later]
 		Text tableIdText = new Text();
 		tableIdText.setFont(new Font(20));
 		tableIdText.setWrappingWidth(200);
 		tableIdText.setTextAlignment(TextAlignment.JUSTIFY);
-		tableIdText.setText(idCount.toString());
+		tableIdText.setText(this.getTableName());
+		this.tableIdText = tableIdText;
+
+		// add event handler for when title is selected
+		//tableIdText.addEventHandler(MouseEvent.MOUSE_CLICKED, titleSelectHandler);
+		tableIdText.setOnMouseClicked(titleSelectHandler);
+
 		this.getChildren().add(tableIdText);
 		
 		// add event handlers
 		this.setOnMousePressed(mousePressed);
 		this.setOnMouseDragged(mouseDragged);
 		
+		table = this;
+
 	}
 
 	/**
-	 * Add a table reference to the list in the
-	 * explorer pane.
+	 * Get table identification number
 	 * @return tableId
 	 */
 	public int getTableId() {
@@ -66,6 +78,23 @@ public class Table extends VBox {
 	 */
 	public void setTableId(int tableId) {
 		this.tableId = tableId;
+	}
+
+	/**
+	 * Get table name
+	 * @return tableName
+	 */
+	public String getTableName() {
+		return tableName;
+	}
+
+	/**
+	 * Set the table name
+	 * @param tableName new table name
+	 * @return Nothing.
+	 */
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
 
 	/**
@@ -117,5 +146,17 @@ public class Table extends VBox {
     		table.setTranslateY(tableYMovement);
     	}
     };
+    
+    // event handler for selecting the table title
+    EventHandler<MouseEvent> titleSelectHandler = new EventHandler<MouseEvent>() {
 
+    	@Override
+    	public void handle(MouseEvent e) {
+    		System.out.println("Title was selected");
+
+    		// stop displaying the static title text
+    		//table.getChildren().remove(tableIdText);
+
+    	}
+    };
 }

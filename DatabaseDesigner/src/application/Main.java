@@ -26,22 +26,15 @@ public class Main extends Application {
 			ToolButton createTableButton = toolPane.addToolButton("Table", DesignerTool.TABLE_CREATE, ButtonType.BUTTON);
 			ToolButton createRelationshipButton = toolPane.addToolButton("Relationship", DesignerTool.RELATIONSHIP_CREATE, ButtonType.TOGGLE);
 
-			// define actions for the buttons
-			createTableButton.addCreateAction(DesignerTool.TABLE_CREATE, designerPane, toolPane);
-			createRelationshipButton.addCreateAction(DesignerTool.RELATIONSHIP_CREATE, designerPane, toolPane);
-			
 			// create explorer pane
-			ExplorerPane explorer = new ExplorerPane();
-			explorer.addTable("Placeholder 1");
-			explorer.addTable("Placeholder 2");
-			explorer.updateTableExplorer();
+			ExplorerPane explorerPane = new ExplorerPane();
 			
-			// remove one of the tables (for testing purposes)
-			explorer.removeTable("Placeholder 1");
-			explorer.updateTableExplorer();
+			// define actions for the buttons
+			createTableButton.addCreateAction(DesignerTool.TABLE_CREATE, designerPane, toolPane, explorerPane);
+			createRelationshipButton.addCreateAction(DesignerTool.RELATIONSHIP_CREATE, designerPane, toolPane, explorerPane);
 
 			// add the panes to the window
-			BorderPane root = new BorderPane(designerPane, toolPane, null, null, explorer);
+			BorderPane root = new BorderPane(designerPane, toolPane, null, null, explorerPane);
 			
 			// create the scene and add it to the stage
 			Scene scene = new Scene(root,1200,800);

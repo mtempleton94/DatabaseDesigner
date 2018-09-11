@@ -72,7 +72,7 @@ public class ToolButton extends VBox {
 	 * @param toolPane Identify tool pane the button belongs to.
 	 * @return Nothing.
 	 */
-	public void addCreateAction(DesignerTool tool, DesignerPane designerPane, ToolPane toolPane) {
+	public void addCreateAction(DesignerTool tool, DesignerPane designerPane, ToolPane toolPane, ExplorerPane explorerPane) {
 
 		// call the required method when button is clicked
 		this.setOnMouseClicked((e) -> {
@@ -81,9 +81,15 @@ public class ToolButton extends VBox {
 			switch (tool) {
 			case TABLE_CREATE:
 
-				// create table and deactivate any other active tools
-				designerPane.createTable();
+				// deactivate any currently active tool
 				toolPane.setActiveTool(null);
+
+				// create table in designer area
+				Table newTable = designerPane.createTable();
+
+				// add table reference to explorer pane
+				explorerPane.addTable(newTable.getTableName());
+
 				break;
 			case RELATIONSHIP_CREATE:
 
