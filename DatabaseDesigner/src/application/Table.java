@@ -25,6 +25,12 @@ public class Table extends VBox {
 	String tableName;
 	Text tableIdText;
 	
+	// variables for timing mouse click
+	double clickStartTime = 0;
+	double clickEndTime = 0;
+	double timeClickHeld = 0;
+	boolean clickHeld = false;
+
 	// positioning variables
 	double cursorXPosition, cursorYPosition;
 	double tableXPosition, tableYPosition;
@@ -38,6 +44,9 @@ public class Table extends VBox {
 		this.setStyle("-fx-background-color: white;");
 		this.setWidth(80);
 
+		// set minimum size for the table container
+		this.setMinHeight(100);
+
 		// set the default table name based in the id
 		this.setTableName("Table " + idCount.toString());
 
@@ -50,8 +59,8 @@ public class Table extends VBox {
 		this.tableIdText = tableIdText;
 
 		// add event handler for when title is selected
-		//tableIdText.addEventHandler(MouseEvent.MOUSE_CLICKED, titleSelectHandler);
-		tableIdText.setOnMouseClicked(titleSelectHandler);
+		tableIdText.setOnMousePressed(titlePressHandler);
+		tableIdText.setOnMouseReleased(titleReleaseHandler);
 
 		this.getChildren().add(tableIdText);
 		
@@ -146,16 +155,39 @@ public class Table extends VBox {
     		table.setTranslateY(tableYMovement);
     	}
     };
-    
+
     // event handler for selecting the table title
-    EventHandler<MouseEvent> titleSelectHandler = new EventHandler<MouseEvent>() {
+    EventHandler<MouseEvent> titlePressHandler = new EventHandler<MouseEvent>() {
 
     	@Override
     	public void handle(MouseEvent e) {
-    		System.out.println("Title was selected");
 
-    		// stop displaying the static title text
-    		//table.getChildren().remove(tableIdText);
+    		// start timing length of mouse press
+    		clickStartTime = System.nanoTime();
+    		clickHeld = true;
+
+    	}
+    };
+
+    // event handler for mouse release on table title
+    EventHandler<MouseEvent> titleReleaseHandler = new EventHandler<MouseEvent>() {
+
+    	@Override
+    	public void handle(MouseEvent e) {
+
+    		// check if mouse is being held
+    		if(clickHeld) {
+    			clickEndTime = System.nanoTime();
+    			clickHeld = false;
+    	    }
+
+    	    // check length of mouse press to determine if user is editing
+    	    // title or moving the table
+    	    timeClickHeld = (clickEndTime - clickStartTime) / Math.pow(10,9);
+    	    if(timeClickHeld < 0.2) {
+    	    	//table.getChildren().remove(tableIdText);
+    	    	System.out.println("Edit title text");
+    	    }
 
     	}
     };
