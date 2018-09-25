@@ -2,12 +2,20 @@ package application;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.Node;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TextField;
 
 /**
 * <h1>Table</h1>
@@ -24,6 +32,10 @@ public class Table extends VBox {
 	private int tableId;
 	String tableName;
 	Text tableIdText;
+	private Hyperlink addField;
+
+	// text field for title updates
+	private TextField titleTextField;
 	
 	// variables for timing mouse click
 	double clickStartTime = 0;
@@ -45,31 +57,56 @@ public class Table extends VBox {
 		this.setWidth(80);
 
 		// set minimum size for the table container
-		this.setMinHeight(100);
+		//this.setMinHeight(100);
 
 		// set the default table name based in the id
 		this.setTableName("Table " + idCount.toString());
 
 		// add the table id [temporary - will be removed later]
-		Text tableIdText = new Text();
+		tableIdText = new Text();
 		tableIdText.setFont(new Font(20));
 		tableIdText.setWrappingWidth(200);
 		tableIdText.setTextAlignment(TextAlignment.JUSTIFY);
 		tableIdText.setText(this.getTableName());
-		this.tableIdText = tableIdText;
 
 		// add event handler for when title is selected
 		tableIdText.setOnMousePressed(titlePressHandler);
 		tableIdText.setOnMouseReleased(titleReleaseHandler);
 
+		// add change listener to title text field
+		titleTextField = new TextField();
+		titleTextField.focusedProperty().addListener(new ChangeListener<Boolean>()
+		{
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				titleFocusChange(newValue);
+			}
+		});
+
 		this.getChildren().add(tableIdText);
 		
+		// add button for adding field
+		addNewFieldButton(this);
+
 		// add event handlers
 		this.setOnMousePressed(mousePressed);
 		this.setOnMouseDragged(mouseDragged);
 		
 		table = this;
 
+	}
+
+	/**
+	 * Append the Add Field button to the table
+	 * @param table current table
+	 */
+	private void addNewFieldButton(Table table) {
+		addField = new Hyperlink();
+		addField.setText("Add Field");
+		addField.setOnAction(addFieldSelected);
+		addField.setMinWidth(200);
+		addField.setPrefWidth(80);
+		table.getChildren().add(addField);
 	}
 
 	/**
@@ -104,6 +141,65 @@ public class Table extends VBox {
 	 */
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+
+	/**
+	 * Add a new field to a table
+	 * @return Nothing.
+	 */
+	private void addNewField() {
+		TableField field = new TableField();
+		table.getChildren().add(field);
+	}
+
+	/**
+	 * Table title is selected for editing.
+	 * Display text entry field
+	 * @return Nothing.
+	 */
+	private void editTitleText() {
+
+		// remove the table title text
+		Node tableTitle = table.getChildren().get(0);
+		table.getChildren().remove(tableTitle);
+
+		// add the text field for editing the title
+		table.getChildren().add(0, titleTextField);
+		titleTextField.setText(getTableName());
+
+	}
+
+	/**
+	 * Table title focus change
+	 * Display text entry field
+	 * @param table current table
+	 * @return Nothing.
+	 */
+	public void titleFocusChange(Boolean hasFocus) {
+
+        if (hasFocus)
+        {
+            titleTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+            	@Override
+                public void handle(KeyEvent event) {
+
+            		// escape or enter pressed
+	                if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.ESCAPE) {
+
+	                	// update the table name
+	                	setTableName(titleTextField.getText());
+	            		tableIdText.setText(getTableName());
+
+	                	// remove the title text field
+	                	table.getChildren().remove(titleTextField);
+
+	                	// add the title text
+	                	table.getChildren().add(0, tableIdText);
+	                }
+            	}
+            });
+        }
 	}
 
 	/**
@@ -185,10 +281,24 @@ public class Table extends VBox {
     	    // title or moving the table
     	    timeClickHeld = (clickEndTime - clickStartTime) / Math.pow(10,9);
     	    if(timeClickHeld < 0.2) {
-    	    	//table.getChildren().remove(tableIdText);
-    	    	System.out.println("Edit title text");
+    	    	editTitleText();
     	    }
-
     	}
     };
+
+	EventHandler<ActionEvent> addFieldSelected = new EventHandler<ActionEvent>() {
+	    @Override
+	    public void handle(ActionEvent e) {
+
+	    	// remove the add field link while the new field is added
+	    	table.getChildren().remove(addField);
+
+	    	// add the new field
+	    	addNewField();
+
+	    	// add the new field button again
+	    	addNewFieldButton(table);
+
+	    }
+	};
 }
