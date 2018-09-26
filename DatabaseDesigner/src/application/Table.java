@@ -167,6 +167,10 @@ public class Table extends VBox {
 		table.getChildren().add(0, titleTextField);
 		titleTextField.setText(getTableName());
 
+		// give the text field focus
+		titleTextField.selectAll();
+		titleTextField.requestFocus();
+
 	}
 
 	/**
