@@ -54,9 +54,9 @@ public class Table extends VBox {
 
 		// styling for the table container
 		this.setStyle("-fx-background-color: white;");
-		this.setWidth(80);
 
 		// set minimum size for the table container
+		this.setMinWidth(280);
 		//this.setMinHeight(100);
 
 		// set the default table name based in the id
