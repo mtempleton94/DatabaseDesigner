@@ -2,6 +2,7 @@ package application;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -24,8 +25,11 @@ public class TableField extends HBox {
 	private String fieldName = "New Field";
 	private Text fieldNameText;
 	private TextField fieldNameTextField;
+	private Text dataTypeText;
 	private DataType dataType;
+	private DataType defaultDataType = DataType.NCHAR;
 	private Boolean allowNulls;
+	ComboBox<DataType> dataTypeSelect;
 
 	public TableField () {
 
@@ -57,11 +61,16 @@ public class TableField extends HBox {
 			}
 		});
 
+		// data type text
+		dataTypeText = new Text(defaultDataType.toString());
+		dataTypeText.setOnMouseClicked(editDataTypeHandler);
+		this.getChildren().add(dataTypeText);
+
 		// data type select
-		ComboBox<DataType> dataTypeSelect = new ComboBox<>();
+		dataTypeSelect = new ComboBox<>();
 		dataTypeSelect.getItems().setAll(DataType.values());
 		dataTypeSelect.setPrefWidth(80);
-		this.getChildren().add(dataTypeSelect);
+		// [TODO] Add focus change listener
 
 		// check box for allow nulls
 		CheckBox allowNulls = new CheckBox("Null");
@@ -98,6 +107,23 @@ public class TableField extends HBox {
 		return this.fieldName;
 	}
 
+	/**
+	 * Set the field data type
+	 * @param dataType new field data type
+	 * @return Nothing.
+	 */
+	public void setDataType(DataType dataType) {
+		this.dataType = dataType;
+	}
+
+	/**
+	 * Get data type
+	 * @return field data type
+	 */
+	public DataType getDataType() {
+		return this.dataType;
+	}
+
     // event handler for selecting the field name
     EventHandler<MouseEvent> editFieldNameHandler = new EventHandler<MouseEvent>() {
 
@@ -115,6 +141,26 @@ public class TableField extends HBox {
     		// give the text field focus
     		fieldNameTextField.selectAll();
     		fieldNameTextField.requestFocus();
+
+    	}
+    };
+
+    // event handler for data type selection
+    EventHandler<MouseEvent> editDataTypeHandler = new EventHandler<MouseEvent>() {
+
+    	@Override
+    	public void handle (MouseEvent e) {
+
+    		// remove the data type text
+    		Node dataTypeText = tableField.getChildren().get(2);
+    		tableField.getChildren().remove(dataTypeText);
+    		
+    		// add the drop down menu for selecting data type
+    		tableField.getChildren().add(2, dataTypeSelect);
+    		dataTypeSelect.setValue(defaultDataType);
+    		
+    		// display the list of items
+    		dataTypeSelect.show();
 
     	}
     };
